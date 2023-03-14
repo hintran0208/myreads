@@ -1,44 +1,24 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import BookList from './components/BookList';
+import * as BooksAPI from './BooksAPI';
 
 function App() {
   const [showSearchPage, setShowSearchpage] = useState(false);
-  const [bookList, setBookList] = useState([
-    {
-      id: 1,
-      title: 'To Kill a Mockingbird',
-      category: 'currentlyReading',
-      author: 'Harper Lee',
-      imageURL:
-        'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
-    },
-    {
-      id: 2,
-      title: 'To Kill a Mockingbird',
-      category: 'wantToRead',
-      author: 'Harper Lee',
-      imageURL:
-        'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
-    },
-    {
-      id: 3,
-      title: 'To Kill a Mockingbird',
-      category: 'wantToRead',
-      author: 'Harper Lee',
-      imageURL:
-        'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
-    },
-    {
-      id: 4,
-      title: 'To Kill a Mockingbird',
-      category: 'read',
-      author: 'Harper Lee',
-      imageURL:
-        'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
-    },
-  ]);
+  const [bookList, setBookList] = useState([]);
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await BooksAPI.getAll();
+        setBookList(response);
+      } catch (error) {
+        console.log('Failed to get all books', error);
+      }
+    };
+    fetchBook();
+  }, []);
 
   const updateBookCategory = (selectedBook, selectedCategory) => {
     const newBookList = bookList.map((book) => {
@@ -50,6 +30,7 @@ function App() {
     });
 
     setBookList(newBookList);
+    BooksAPI.update(selectedBook, selectedCategory);
   };
 
   return (

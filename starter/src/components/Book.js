@@ -1,8 +1,9 @@
 import React from 'react';
 
 const Book = ({ book, updateBookCategory }) => {
-  const { title, category, author, imageURL } = book;
+  const { title, shelf, authors, imageLinks } = book;
 
+  console.log(book);
   const changeBookCategory = (e) => {
     if (updateBookCategory) updateBookCategory(book, e.target.value);
   };
@@ -15,11 +16,11 @@ const Book = ({ book, updateBookCategory }) => {
           style={{
             width: 128,
             height: 193,
-            backgroundImage: `url(${imageURL})`,
+            backgroundImage: `url(${imageLinks.thumbnail})`,
           }}
         ></div>
         <div className="book-shelf-changer">
-          <select defaultValue={category} onChange={changeBookCategory}>
+          <select defaultValue={shelf} onChange={changeBookCategory}>
             <option value="none" disabled>
               Move to...
             </option>
@@ -31,7 +32,7 @@ const Book = ({ book, updateBookCategory }) => {
         </div>
       </div>
       <div className="book-title">{title}</div>
-      <div className="book-authors">{author}</div>
+      <div className="book-authors">{authors}</div>
     </div>
   );
 };
