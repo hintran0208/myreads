@@ -1,7 +1,11 @@
 import React from 'react';
 
-const Book = ({ book }) => {
-  const { title, author, imageURL } = book;
+const Book = ({ book, updateBookCategory }) => {
+  const { title, category, author, imageURL } = book;
+
+  const changeBookCategory = (e) => {
+    if (updateBookCategory) updateBookCategory(book, e.target.value);
+  };
 
   return (
     <div className="book">
@@ -15,7 +19,7 @@ const Book = ({ book }) => {
           }}
         ></div>
         <div className="book-shelf-changer">
-          <select>
+          <select defaultValue={category} onChange={changeBookCategory}>
             <option value="none" disabled>
               Move to...
             </option>

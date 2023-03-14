@@ -7,6 +7,7 @@ function App() {
   const [showSearchPage, setShowSearchpage] = useState(false);
   const [bookList, setBookList] = useState([
     {
+      id: 1,
       title: 'To Kill a Mockingbird',
       category: 'currentlyReading',
       author: 'Harper Lee',
@@ -14,6 +15,7 @@ function App() {
         'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
     },
     {
+      id: 2,
       title: 'To Kill a Mockingbird',
       category: 'wantToRead',
       author: 'Harper Lee',
@@ -21,6 +23,7 @@ function App() {
         'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
     },
     {
+      id: 3,
       title: 'To Kill a Mockingbird',
       category: 'wantToRead',
       author: 'Harper Lee',
@@ -28,6 +31,7 @@ function App() {
         'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
     },
     {
+      id: 4,
       title: 'To Kill a Mockingbird',
       category: 'read',
       author: 'Harper Lee',
@@ -35,6 +39,18 @@ function App() {
         'http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api',
     },
   ]);
+
+  const updateBookCategory = (selectedBook, selectedCategory) => {
+    const newBookList = bookList.map((book) => {
+      if (book.id === selectedBook.id) {
+        selectedBook.category = selectedCategory;
+        return selectedBook;
+      }
+      return book;
+    });
+
+    setBookList(newBookList);
+  };
 
   return (
     <div className="app">
@@ -56,7 +72,7 @@ function App() {
         <div className="list-books">
           <Header />
           <div className="list-books-content">
-            <BookList bookList={bookList} />
+            <BookList bookList={bookList} updateBookCategory={updateBookCategory} />
           </div>
           <div className="open-search">
             <a onClick={() => setShowSearchpage(!showSearchPage)}>Add a book</a>
