@@ -3,7 +3,6 @@ import React from 'react';
 const Book = ({ book, updateBookCategory }) => {
   const { title, shelf, authors, imageLinks } = book;
 
-  console.log(book);
   const changeBookCategory = (e) => {
     if (updateBookCategory) updateBookCategory(book, e.target.value);
   };
@@ -20,8 +19,8 @@ const Book = ({ book, updateBookCategory }) => {
           }}
         ></div>
         <div className="book-shelf-changer">
-          <select defaultValue={shelf} onChange={changeBookCategory}>
-            <option value="none" disabled>
+          <select defaultValue={shelf ? shelf : 'none'} onChange={changeBookCategory}>
+            <option value="move" disabled>
               Move to...
             </option>
             <option value="currentlyReading">Currently Reading</option>
