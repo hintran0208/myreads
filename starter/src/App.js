@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
-import './App.css';
-import * as BooksAPI from './BooksAPI';
+import './styles/App.css';
+import * as BooksAPI from './api/BooksAPI';
 import Book from './components/Book';
 import BookList from './components/BookList';
 

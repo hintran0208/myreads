@@ -1,5 +1,6 @@
 import React from 'react';
 import BookShelf from './BookShelf';
+import { PropTypes } from 'prop-types';
 
 const BookList = ({ bookList, updateBookCategory }) => {
   const currentlyReading = bookList.filter((book) => book.shelf === 'currentlyReading');
@@ -9,14 +10,19 @@ const BookList = ({ bookList, updateBookCategory }) => {
   return (
     <>
       <BookShelf
-        title="Currently Reading"
+        shelf="Currently Reading"
         books={currentlyReading}
         updateBookCategory={updateBookCategory}
       />
-      <BookShelf title="Want To Read" books={wantToRead} updateBookCategory={updateBookCategory} />
-      <BookShelf title="Read" books={read} updateBookCategory={updateBookCategory} />
+      <BookShelf shelf="Want To Read" books={wantToRead} updateBookCategory={updateBookCategory} />
+      <BookShelf shelf="Read" books={read} updateBookCategory={updateBookCategory} />
     </>
   );
+};
+
+BookShelf.propTypes = {
+  bookList: PropTypes.array.isRequired,
+  updateBookCategory: PropTypes.func.isRequired,
 };
 
 export default BookList;
