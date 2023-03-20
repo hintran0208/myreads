@@ -1,17 +1,18 @@
+import { useEffect, useState } from 'react';
+import { Link, Route, Routes } from 'react-router-dom';
+import { useDebounce } from 'use-debounce';
 import './App.css';
-import { useState, useEffect } from 'react';
-import Header from './components/Header';
-import BookList from './components/BookList';
 import * as BooksAPI from './BooksAPI';
 import Book from './components/Book';
+import BookList from './components/BookList';
 
 function App() {
-  const [showSearchPage, setShowSearchpage] = useState(false);
   const [bookList, setBookList] = useState([]);
   const [queryString, setQueryString] = useState('');
   const [searchBooks, setSearchBooks] = useState([]);
   const [mergedBooks, setMergedBooks] = useState([]);
   const [mapOfIdToBooks, setMapOfIdToBooks] = useState(new Map());
+  const [query] = useDebounce(queryString, 200);
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -31,7 +32,7 @@ function App() {
 
     const fetchSearchBook = async () => {
       try {
-        const searchBookData = await BooksAPI.search(queryString);
+        const searchBookData = await BooksAPI.search(query);
         if (searchBookData.error) {
           setSearchBooks([]);
         } else {
@@ -45,14 +46,14 @@ function App() {
       }
     };
 
-    if (queryString) fetchSearchBook();
+    if (query) fetchSearchBook();
 
     return () => {
       isActive = false;
       setSearchBooks([]);
-      console.log('UNMOUNT DATA FROM', queryString);
+      console.log('UNMOUNT DATA FROM', query);
     };
-  }, [queryString]);
+  }, [query]);
 
   useEffect(() => {
     const combined = searchBooks.map((book) => {
@@ -74,6 +75,11 @@ function App() {
       return book;
     });
 
+    if (!mapOfIdToBooks.has(selectedBook.id)) {
+      selectedBook.shelf = selectedCategory;
+      newBookList.push(selectedBook);
+    }
+
     setBookList(newBookList);
     BooksAPI.update(selectedBook, selectedCategory);
   };
@@ -86,42 +92,56 @@ function App() {
 
   return (
     <div className="app">
-      {showSearchPage ? (
-        <div className="search-books">
-          <div className="search-books-bar">
-            <a className="close-search" onClick={() => setShowSearchpage(!showSearchPage)}>
-              Close
-            </a>
-            <div className="search-books-input-wrapper">
-              <input
-                type="text"
-                placeholder="Search by title, author, or ISBN"
-                value={queryString}
-                onChange={(e) => setQueryString(e.target.value)}
-              />
+      <Routes>
+        <Route
+          path="/search"
+          element={
+            <div className="search-books">
+              <div className="search-books-bar">
+                <Link to="/">
+                  <button className="close-search">Close</button>
+                </Link>
+                <div className="search-books-input-wrapper">
+                  <input
+                    type="text"
+                    placeholder="Search by title, author, or ISBN"
+                    value={queryString}
+                    onChange={(e) => setQueryString(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="search-books-results">
+                <ol className="books-grid">
+                  {mergedBooks.map((book, index) => (
+                    <li key={index}>
+                      <Book book={book} updateBookCategory={updateBookCategory} />
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </div>
-          </div>
-          <div className="search-books-results">
-            <ol className="books-grid">
-              {mergedBooks.map((book, index) => (
-                <li key={index}>
-                  <Book book={book} updateBookCategory={updateBookCategory} />
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-      ) : (
-        <div className="list-books">
-          <Header />
-          <div className="list-books-content">
-            <BookList bookList={bookList} updateBookCategory={updateBookCategory} />
-          </div>
-          <div className="open-search">
-            <a onClick={() => setShowSearchpage(!showSearchPage)}>Add a book</a>
-          </div>
-        </div>
-      )}
+          }
+        ></Route>
+
+        <Route
+          path="/"
+          element={
+            <div className="list-books">
+              <div className="list-books-title">
+                <h1>MyReads</h1>
+              </div>
+              <div className="list-books-content">
+                <BookList bookList={bookList} updateBookCategory={updateBookCategory} />
+              </div>
+              <div className="open-search">
+                <Link to="/search">
+                  <button>Add a book</button>
+                </Link>
+              </div>
+            </div>
+          }
+        ></Route>
+      </Routes>
     </div>
   );
 }
