@@ -26,8 +26,6 @@ const Search = ({ bookList, updateBookCategory }) => {
 
   const bookSearchList = queryString === '' ? [] : searchBooks;
 
-  //   const newBookList = queryString === '' ? [] : searchBooks;
-
   return (
     <div className="search-books">
       <div className="search-books-bar">
