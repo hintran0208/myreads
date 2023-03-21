@@ -1,10 +1,11 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
+import * as BooksAPI from '../api/BooksAPI';
 
-const Book = ({ book, updateBookCategory }) => {
-  const { title, shelf, authors, imageLinks } = book;
-
-  const changeBookCategory = (e) => {
-    if (updateBookCategory) updateBookCategory(book, e.target.value);
+const Book = ({ book, bookList, updateBookCategory }) => {
+  const changeBookCategory = (category) => {
+    BooksAPI.update(book, category);
+    updateBookCategory(book, category);
   };
 
   return (
@@ -15,12 +16,15 @@ const Book = ({ book, updateBookCategory }) => {
           style={{
             width: 128,
             height: 193,
-            backgroundImage: `url(${imageLinks.thumbnail})`,
+            backgroundImage: `url(${book.imageLinks?.thumbnail})`,
           }}
         ></div>
         <div className="book-shelf-changer">
-          <select defaultValue={shelf ? shelf : 'none'} onChange={changeBookCategory}>
-            <option value="move" disabled>
+          <select
+            value={book?.shelf || bookList.find((b) => b.id === book.id)?.shelf || 'none'}
+            onChange={(e) => changeBookCategory(e.target.value)}
+          >
+            <option value="disabled" disabled>
               Move to...
             </option>
             <option value="currentlyReading">Currently Reading</option>
@@ -30,10 +34,16 @@ const Book = ({ book, updateBookCategory }) => {
           </select>
         </div>
       </div>
-      <div className="book-title">{title}</div>
-      <div className="book-authors">{authors}</div>
+      <div className="book-title">{book.title}</div>
+      <div className="book-authors">{book.authors}</div>
     </div>
   );
+};
+
+Book.propTypes = {
+  book: PropTypes.object.isRequired,
+  bookList: PropTypes.array.isRequired,
+  updateBookCategory: PropTypes.func.isRequired,
 };
 
 export default Book;

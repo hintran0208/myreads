@@ -1,26 +1,38 @@
+import { PropTypes } from 'prop-types';
 import React from 'react';
 import BookShelf from './BookShelf';
-import { PropTypes } from 'prop-types';
+import { Link } from 'react-router-dom';
 
-const BookList = ({ bookList, updateBookCategory }) => {
-  const currentlyReading = bookList.filter((book) => book.shelf === 'currentlyReading');
-  const wantToRead = bookList.filter((book) => book.shelf === 'wantToRead');
-  const read = bookList.filter((book) => book.shelf === 'read');
-
+const BookList = ({ shelves, bookList, updateBookCategory }) => {
   return (
     <>
-      <BookShelf
-        shelf="Currently Reading"
-        books={currentlyReading}
-        updateBookCategory={updateBookCategory}
-      />
-      <BookShelf shelf="Want To Read" books={wantToRead} updateBookCategory={updateBookCategory} />
-      <BookShelf shelf="Read" books={read} updateBookCategory={updateBookCategory} />
+      <div className="list-books-title">
+        <h1>MyReads</h1>
+      </div>
+
+      <div className="list-books-content">
+        {shelves.map((shelf) => (
+          <BookShelf
+            key={shelf.id}
+            shelfName={shelf.shelfName}
+            shelfDisplayName={shelf.shelfDisplayName}
+            bookList={bookList}
+            updateBookCategory={updateBookCategory}
+          />
+        ))}
+      </div>
+
+      <div className="open-search">
+        <Link to="/search">
+          <button>Add a book</button>
+        </Link>
+      </div>
     </>
   );
 };
 
 BookShelf.propTypes = {
+  shelves: PropTypes.array,
   bookList: PropTypes.array.isRequired,
   updateBookCategory: PropTypes.func.isRequired,
 };
